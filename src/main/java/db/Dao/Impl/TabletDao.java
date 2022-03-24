@@ -41,7 +41,27 @@ public class TabletDao implements Dao<Tablet> {
 
     @Override
     public void update(Tablet tablet) {
+        Session session = HibernateSessionFactory.getSessionFactory().openSession();
+        Transaction transaction = session.beginTransaction();
 
+        String sql = "update Tablet set brand = :brandId, diagonal = :diagonalV,"
+                + " ram = :ramV, os = :osId, memory = :memoryV"
+                + " where id = :tabletId";
+
+
+        Query query = session.createQuery(sql);
+
+        query.setParameter("brandId", tablet.getBrand());
+        query.setParameter("diagonalV", tablet.getDiagonal());
+        query.setParameter("ramV", tablet.getRam());
+        query.setParameter("osId", tablet.getOs());
+        query.setParameter("memoryV", tablet.getMemory());
+        query.setParameter("tabletId", tablet.getId());
+
+        query.executeUpdate();
+
+        transaction.commit();
+        session.close();
     }
 
     @Override

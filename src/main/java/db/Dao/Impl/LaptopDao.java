@@ -42,7 +42,27 @@ public class LaptopDao implements Dao<Laptop> {
 
     @Override
     public void update(Laptop laptop) {
+        Session session = HibernateSessionFactory.getSessionFactory().openSession();
+        Transaction transaction = session.beginTransaction();
 
+        String sql = "update Laptop set brand = :brandId, diagonal = :diagonalV,"
+                + " ram = :ramV, cpu = :cpuId, videoCard = :videoCardId"
+                + " where id = :laptopId";
+
+
+        Query query = session.createQuery(sql);
+
+        query.setParameter("brandId", laptop.getBrand());
+        query.setParameter("diagonalV", laptop.getDiagonal());
+        query.setParameter("ramV", laptop.getRam());
+        query.setParameter("cpuId", laptop.getCpu());
+        query.setParameter("videoCardId", laptop.getVideoCard());
+        query.setParameter("laptopId", laptop.getId());
+
+        query.executeUpdate();
+
+        transaction.commit();
+        session.close();
     }
 
     @Override

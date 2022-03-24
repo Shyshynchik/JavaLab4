@@ -44,7 +44,7 @@ public class Cli {
                 } else if (command == 4) {
                     findData();
                 } else if (command == 5) {
-//                    dirtyRead();
+                    updateData();
                 } else if (command == 6) {
                     clearDb();
                 } else {
@@ -230,7 +230,7 @@ public class Cli {
     /**
      * 5 : Изменить объект
      */
-    private static void dirtyRead() {
+    private static void updateData() {
 
         try {
             System.out.println("""
@@ -256,14 +256,125 @@ public class Cli {
      * 5.1 Изменить ноутбук
      */
     private static void updateLaptop() {
+        try {
+            System.out.println("""
+                    Введите через запятую критерии данные для изменения, если менять не нужно, введите -:
+                    Id
+                    Брэнд
+                    Диагональ
+                    ОЗУ
+                    Процессор
+                    Видеокарта""");
+            String[] command = reader.readLine().split(",");
 
+            Laptop laptop = new Laptop();
+            laptop.setId(Integer.parseInt(command[0]));
+            Laptop oldLaptop = laptopDao.get(laptop.getId());
+
+            if (!command[1].equals("-")) {
+                Brand brand = new Brand();
+                brand.setName(command[1]);
+                brand = brandDao.getOrAdd(brand);
+                laptop.setBrand(brand);
+            } else {
+                laptop.setBrand(oldLaptop.getBrand());
+            }
+
+            if (!command[2].equals("-")) {
+                laptop.setDiagonal(Integer.parseInt(command[2]));
+            } else {
+                laptop.setDiagonal(oldLaptop.getDiagonal());
+            }
+
+            if (!command[3].equals("-")) {
+                laptop.setRam(Integer.parseInt(command[3]));
+            } else {
+                laptop.setRam(oldLaptop.getRam());
+            }
+
+            if (!command[4].equals("-")) {
+                Cpu cpu = new Cpu();
+                cpu.setName(command[4]);
+                cpu = cpuDao.getOrAdd(cpu);
+                laptop.setCpu(cpu);
+            } else {
+                laptop.setCpu(oldLaptop.getCpu());
+            }
+
+            if (!command[5].equals("-")) {
+                VideoCard videoCard = new VideoCard();
+                videoCard.setName(command[5]);
+                videoCard = videoCardDao.getOrAdd(videoCard);
+                laptop.setVideoCard(videoCard);
+            } else {
+                laptop.setVideoCard(oldLaptop.getVideoCard());
+            }
+
+            laptopDao.update(laptop);
+        } catch (IOException e) {
+            System.out.println("Ошибка добавления");
+        }
     }
 
     /**
      * 5.2 Изменить планшет
      */
     private static void updateTablet() {
+        try {
+            System.out.println("""
+                    Введите через запятую критерии данные для изменения, если менять не нужно, введите -:
+                    Id
+                    Брэнд
+                    Диагональ
+                    ОЗУ
+                    Операционную систему
+                    Память""");
+            String[] command = reader.readLine().split(",");
 
+            Tablet tablet = new Tablet();
+            tablet.setId(Integer.parseInt(command[0]));
+            Tablet oldTablet = tabletDao.get(tablet.getId());
+
+            if (!command[1].equals("-")) {
+                Brand brand = new Brand();
+                brand.setName(command[1]);
+                brand = brandDao.getOrAdd(brand);
+                tablet.setBrand(brand);
+            } else {
+                tablet.setBrand(oldTablet.getBrand());
+            }
+
+            if (!command[2].equals("-")) {
+                tablet.setDiagonal(Integer.parseInt(command[2]));
+            } else {
+                tablet.setDiagonal(oldTablet.getDiagonal());
+            }
+
+            if (!command[3].equals("-")) {
+                tablet.setRam(Integer.parseInt(command[3]));
+            } else {
+                tablet.setRam(oldTablet.getRam());
+            }
+
+            if (!command[4].equals("-")) {
+                Os os = new Os();
+                os.setName(command[4]);
+                os = osDao.getOrAdd(os);
+                tablet.setOs(os);
+            } else {
+                tablet.setOs(oldTablet.getOs());
+            }
+
+            if (!command[5].equals("-")) {
+                tablet.setMemory(Integer.parseInt(command[5]));
+            } else {
+                tablet.setMemory(oldTablet.getMemory());
+            }
+
+            tabletDao.update(tablet);
+        } catch (IOException e) {
+            System.out.println("Ошибка добавления");
+        }
     }
 
     /**
