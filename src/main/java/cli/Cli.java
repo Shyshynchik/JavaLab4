@@ -4,6 +4,10 @@ import converter.Converter;
 import db.Dao.Impl.*;
 import db.Entity.*;
 import db.Utils.DropData;
+import db.Utils.HibernateSessionFactory;
+import org.hibernate.Session;
+import org.hibernate.Transaction;
+import org.hibernate.query.Query;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -31,7 +35,8 @@ public class Cli {
                         3 : Вывести все данные
                         4 : Вывести определенные данные
                         5 : Изменить объект
-                        6 : Очистить БД""");
+                        6 : Очистить БД
+                        7 : Вывести все ноутбуки на процессоре AMD""");
 
                 int command = Integer.parseInt(reader.readLine());
 
@@ -47,6 +52,8 @@ public class Cli {
                     updateData();
                 } else if (command == 6) {
                     clearDb();
+                } else if (command == 7) {
+                    getAmdLaptops();
                 } else {
                     break;
                 }
@@ -382,6 +389,25 @@ public class Cli {
      */
     private static void clearDb() {
         DropData.dropDataAndResetId();
+    }
+
+    /**
+     * 7 Вывести все ноутбуки на процессоре AMD
+     * (Так надо было реализовать 4 и 5 пункт)
+     */
+    private static void getAmdLaptops() {
+        Session session = HibernateSessionFactory.getSessionFactory().openSession();
+        Transaction transaction = session.beginTransaction();
+
+        String hql = "from Laptop where cpu.name = :cpuName";
+
+        Query query = session.createQuery(hql);
+        query.setParameter("cpuName", "amd");
+
+        System.out.println(query.list());
+
+        transaction.commit();
+        session.close();
     }
 
 }
